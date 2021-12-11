@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "chrome-jira-gitlab",
+    "message": "Jira-Gitlab integration",
     "description": "Jira plugin for create branches in Gitlab"
   }
 }
