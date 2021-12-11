@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service build --mode development --watch",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint --fix"
   },
   "dependencies": {
     "axios": "^0.20.0",
@@ -21,6 +21,8 @@
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/eslint-config-prettier": "^6.0.0",
+    "@vuikit/icons": "^0.8.1",
+    "@vuikit/theme": "^0.8.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.3.1",
@@ -29,6 +31,8 @@
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-browser-extension": "latest",
-    "vue-template-compiler": "^2.6.11"
+    "vue-select": "^3.16.0",
+    "vue-template-compiler": "^2.6.11",
+    "vuikit": "^0.8.10"
   }
 }

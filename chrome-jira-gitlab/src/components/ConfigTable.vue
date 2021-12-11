@@ -1,18 +1,38 @@
 <template>
-  <div>
-    <p>{{ defaultText }}</p>
-  </div>
+  <vk-table :data="rows" hoverable>
+    <vk-table-column cell="rn">
+      <div v-if="row.jira" slot-scope="{ row }">
+        <vk-button type="link" @click="editClick(row)"> &#9998; </vk-button>
+        <vk-button type="link" @click="deleteClick(row)"> ✗ </vk-button>
+      </div>
+      <vk-button
+        v-else
+        type="link"
+        slot-scope="{ row }"
+        @click="editClick(row)"
+      >
+        +
+      </vk-button>
+    </vk-table-column>
+    <vk-table-column title="Jira site" cell="jira"></vk-table-column>
+    <vk-table-column title="Gitlab site" cell="gitlab"></vk-table-column>
+    <vk-table-column title="Gitlab token" cell="token"></vk-table-column>
+  </vk-table>
 </template>
 
 <script>
 export default {
   name: "ConfigTable",
-  mounted() {
-    browser.runtime.sendMessage({});
+  props: {
+    rows: Array,
   },
-  computed: {
-    defaultText() {
-      return browser.i18n.getMessage("extName");
+  emits: ["edit", "delete"],
+  methods: {
+    editClick(row) {
+      this.$emit("edit", row.rn);
+    },
+    deleteClick(row) {
+      this.$emit("delete", row.rn);
     },
   },
 };
