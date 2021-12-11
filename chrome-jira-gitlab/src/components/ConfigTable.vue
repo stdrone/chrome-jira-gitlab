@@ -1,48 +1,19 @@
 <template>
   <div>
-    <q-table title="Config" :rows="rows" :columns="columns" />
+    <p>{{ defaultText }}</p>
   </div>
 </template>
 
 <script>
-const columns = [
-  {
-    name: "jira",
-    required: true,
-    label: "Jira host",
-    align: "left",
-    field: (row) => row.name,
-    format: (val) => `${val}`,
-    sortable: true,
-  },
-  {
-    name: "gitlab",
-    required: true,
-    label: "Gitlab host",
-    align: "left",
-    field: (row) => row.name,
-    format: (val) => `${val}`,
-    sortable: true,
-  },
-  {
-    name: "gitlabkey",
-    required: true,
-    label: "Gitlab key",
-    align: "left",
-    field: (row) => row.name,
-    format: (val) => `${val}`,
-    sortable: true,
-  },
-];
-const rows = [{ jira: "test", gitlab: "test", gitlabkey: "test" }];
-
 export default {
   name: "ConfigTable",
-  setup() {
-    return {
-      columns,
-      rows,
-    };
+  mounted() {
+    browser.runtime.sendMessage({});
+  },
+  computed: {
+    defaultText() {
+      return browser.i18n.getMessage("extName");
+    },
   },
 };
 </script>

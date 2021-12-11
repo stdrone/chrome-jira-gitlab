@@ -30,3 +30,4 @@
   }
 }
 </style>
+./components/ConfigTable.vue

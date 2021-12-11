@@ -1,13 +1,13 @@
 <template>
-  <hello-world />
+  <config-table />
 </template>
 
 <script>
-import HelloWorld from "@/components/HelloWorld.vue";
+import ConfigTable from '../components/ConfigTable.vue';
 
 export default {
   name: "App",
-  components: { HelloWorld },
+  components: { ConfigTable },
 };
 </script>
 
