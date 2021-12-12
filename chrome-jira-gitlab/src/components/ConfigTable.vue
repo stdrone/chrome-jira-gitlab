@@ -1,6 +1,6 @@
 <template>
   <vk-table :data="rows" hoverable>
-    <vk-table-column cell="rn">
+    <vk-table-column cell="rn" title="№">
       <div v-if="row.jira" slot-scope="{ row }">
         <vk-button type="link" @click="editClick(row)"> &#9998; </vk-button>
         <vk-button type="link" @click="deleteClick(row)"> ✗ </vk-button>
