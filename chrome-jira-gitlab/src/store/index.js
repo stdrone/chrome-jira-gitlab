@@ -9,7 +9,12 @@ export default new Vuex.Store({
   },
   getters: {
     configData: (state) => {
-      return state.configData;
+      let data = state.configData.map((x, idx) => {
+        x.rn = idx;
+        x.projects = x.projects || [];
+        return x;
+      });
+      return data;
     },
   },
   mutations: {

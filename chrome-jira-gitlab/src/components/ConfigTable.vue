@@ -17,6 +17,16 @@
     <vk-table-column title="Jira site" cell="jira"></vk-table-column>
     <vk-table-column title="Gitlab site" cell="gitlab"></vk-table-column>
     <vk-table-column title="Gitlab token" cell="token"></vk-table-column>
+    <vk-table-column title="Projects">
+      <vk-button
+        slot-scope="{ row }"
+        v-if="row.gitlab & row.token"
+        type="link"
+        @click="projectsClick(row)"
+      >
+        ...
+      </vk-button>
+    </vk-table-column>
   </vk-table>
 </template>
 
@@ -26,13 +36,18 @@ export default {
   props: {
     rows: Array,
   },
-  emits: ["edit", "delete"],
+  emits: ["edit"],
   methods: {
     editClick(row) {
       this.$emit("edit", row.rn);
     },
     deleteClick(row) {
-      this.$emit("delete", row.rn);
+      let data = this.$store.getters.configData;
+      data.splice(row.rn, 1);
+      this.$store.commit("configData", data);
+    },
+    projectsClick(row) {
+      this.$emit("projects", row.rn);
     },
   },
 };
