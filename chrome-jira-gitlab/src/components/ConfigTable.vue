@@ -20,7 +20,7 @@
     <vk-table-column title="Projects">
       <vk-button
         slot-scope="{ row }"
-        v-if="row.gitlab & row.token"
+        v-if="!!row.gitlab && !!row.token"
         type="link"
         @click="projectsClick(row)"
       >
@@ -36,7 +36,7 @@ export default {
   props: {
     rows: Array,
   },
-  emits: ["edit"],
+  emits: ["edit", "projects"],
   methods: {
     editClick(row) {
       this.$emit("edit", row.rn);

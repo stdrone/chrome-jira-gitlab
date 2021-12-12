@@ -4,21 +4,21 @@
       <div class="field">
         <validation-provider rules="required" v-slot="err">
           <label for="jira" class="uk-legend">Jira site</label>
-          <input class="uk-input" name="jira" v-model="row.jira" />
+          <input class="uk-input" v-model="jira" name="jira" />
           <span>{{ err.errors[0] }}</span>
         </validation-provider>
       </div>
       <div class="field">
         <validation-provider rules="required" v-slot="err">
           <label for="gitlab" class="uk-legend">Gitlab site</label>
-          <input class="uk-input" v-model="row.gitlab" name="gitlab" />
+          <input class="uk-input" v-model="gitlab" name="gitlab" />
           <span>{{ err.errors[0] }}</span>
         </validation-provider>
       </div>
       <div class="field">
         <validation-provider rules="required" v-slot="err">
           <label for="token" class="uk-legend">Gitlab token</label>
-          <input class="uk-input" v-model="row.token" name="token" />
+          <input class="uk-input" v-model="token" name="token" />
           <span>{{ err.errors[0] }}</span>
         </validation-provider>
       </div>
@@ -61,7 +61,11 @@ export default {
       if (this.row.rn == data.length - 1) {
         data.push({});
       }
-      data[this.row.rn] = this.row;
+      data[this.row.rn] = {
+        jira: this.jira,
+        gitlab: this.gitlab,
+        token: this.token,
+      };
       this.$store.commit("configData", data);
       this.$emit("close", this.row);
     },

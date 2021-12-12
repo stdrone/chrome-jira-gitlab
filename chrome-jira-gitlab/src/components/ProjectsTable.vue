@@ -1,15 +1,39 @@
 <template>
   <div>
     <vk-table :data="configRow.projects" hoverable>
-      <vk-table-column cell="rn" slot-scope="{ selected }">
-        <vk-button type="link" @click="deleteClick(selected)"> ✗ </vk-button>
+      <vk-table-column cell="rn">
+        <vk-button slot-scope="{ row }" type="link" @click="deleteClick(row)">
+          ✗
+        </vk-button>
       </vk-table-column>
       <vk-table-column title="Project ID" cell="id"></vk-table-column>
-      <vk-table-column title="Project name" cell="name" slot-scope="{ row }">
-        <input v-model="row.name" />
+      <vk-table-column title="Project name">
+        <input slot-scope="{ row }" v-model="row.name" />
       </vk-table-column>
-      <vk-table-column title="Projects" cell="token"></vk-table-column>
     </vk-table>
+    <div>
+      <v-select
+        name="project"
+        @search="fetchProjects"
+        :options="fetchedProjects"
+        v-model="selected"
+      >
+        <template slot="no-options">
+          type to search GitLab repositories..
+        </template>
+        <template slot="option" slot-scope="option">
+          <div class="d-center">
+            {{ option.label }}
+          </div>
+        </template>
+        <template slot="selected-option" slot-scope="option">
+          <div class="selected d-center">
+            {{ option.label }}
+          </div>
+        </template>
+      </v-select>
+      <vk-button @click="addClick" :disabled="!selected">Add</vk-button>
+    </div>
     <div class="buttons">
       <vk-button @click="saveClick()">Save</vk-button>
       <vk-button @click="cancelClick()">Cancel</vk-button>
@@ -18,16 +42,29 @@
 </template>
 
 <script>
+import { debounce } from "vue-debounce";
+
 export default {
   name: "ProjectsTable",
   props: {
     configRow: Object,
+    fetchedProjects: Array,
+    loading: {
+      type: Number,
+      default: 0,
+    },
+    selected: Object,
   },
   emits: ["save", "cancel"],
   methods: {
-    deleteClick(selected) {
-      console.log(selected);
-      // this.rows.spline(selected, 1);
+    deleteClick(row) {
+      this.configRow.projects.splice(this.configRow.projects.indexOf(row), 1);
+    },
+    addClick() {
+      this.configRow.projects.push({
+        name: this.selected.label,
+        id: this.selected.id,
+      });
     },
     saveClick() {
       let data = this.$store.getters.configData;
@@ -37,6 +74,22 @@ export default {
     },
     cancelClick() {
       this.$emit("close");
+    },
+    fetchProjects(search, loading) {
+      this.GitLabAPI.setUrl(this.configRow.gitlab);
+      this.GitLabAPI.setToken(this.configRow.token);
+      if (search.length) {
+        const me = this;
+        debounce(() => {
+          loading(me.loading++);
+          me.GitLabAPI.get("/projects", { search: search }, (response) => {
+            me.fetchedProjects = response.body.map((x) => {
+              return { label: x.name, id: x.id };
+            });
+            loading(--me.loading);
+          });
+        }, "1000ms")();
+      }
     },
   },
 };
@@ -49,5 +102,35 @@ p {
 
 div.buttons {
   text-align: center;
+}
+
+.d-center {
+  display: flex;
+  align-items: center;
+}
+
+.selected img {
+  width: auto;
+  max-height: 23px;
+  margin-right: 0.5rem;
+}
+
+.v-select .dropdown li {
+  border-bottom: 1px solid rgba(112, 128, 144, 0.1);
+}
+
+.v-select .dropdown li:last-child {
+  border-bottom: none;
+}
+
+.v-select .dropdown li a {
+  padding: 10px 20px;
+  width: 100%;
+  font-size: 1.25em;
+  color: #3c3c3c;
+}
+
+.v-select .dropdown-menu .active > a {
+  color: #fff;
 }
 </style>
