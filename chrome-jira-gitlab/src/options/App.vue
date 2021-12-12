@@ -27,17 +27,12 @@ import ProjectsTable from "../components/ProjectsTable.vue";
 export default {
   name: "App",
   components: { ConfigTable, ConfigEdit, ProjectsTable },
-  props: {
-    editRow: Object,
-    editMode: {
-      type: String,
-      default: "view",
-    },
-  },
-  computed: {
-    data() {
-      return this.$store.getters.configData;
-    },
+  data() {
+    return {
+      data: this.$store.getters.configData,
+      editMode: "view",
+      editRow: {},
+    };
   },
   methods: {
     onEditRow(row) {
@@ -49,6 +44,7 @@ export default {
       this.editMode = "projects";
     },
     onCloseEdit() {
+      this.data = this.$store.getters.configData;
       this.editMode = "view";
     },
   },

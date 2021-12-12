@@ -1,30 +1,39 @@
 <template>
   <div class="popup">
-    <div v-if="url">
-      {{ url }}
+    <div v-if="config">
+      <BranchConfig :config="config" />
     </div>
     <div class="noconfig" v-else>No config for this site</div>
   </div>
 </template>
 
 <script>
+import BranchConfig from "../components/BranchConfig.vue";
+// import { ref } from "vue";
+
 export default {
   name: "App",
-  props: {
-    url: String,
-    config: Object,
+  components: { BranchConfig },
+  data() {
+    return {
+      config: { projects: [] },
+    };
   },
   mounted() {
     var query = { active: true, currentWindow: true };
     const me = this;
     chrome.tabs.query(query, (tabs) => {
       let url = tabs[0].url;
+      let config = { projects: [] };
       me.$store.getters.configData.forEach((element) => {
         if (url.includes(element.jira)) {
-          me.url = url;
-          me.config = element;
+          let issue = new URL(url).pathname.split("/");
+          issue = issue[issue.length - 1];
+          element.issue = issue;
+          config = element;
         }
       });
+      me.config = config;
     });
   },
 };

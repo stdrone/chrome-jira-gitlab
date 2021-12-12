@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vk-table :data="configRow.projects" hoverable>
+    <vk-table :data="projects" hoverable>
       <vk-table-column cell="rn">
         <vk-button slot-scope="{ row }" type="link" @click="deleteClick(row)">
           ✗
@@ -48,17 +48,22 @@ export default {
   name: "ProjectsTable",
   props: {
     configRow: Object,
-    fetchedProjects: Array,
-    loading: {
-      type: Number,
-      default: 0,
-    },
-    selected: Object,
   },
-  emits: ["save", "cancel"],
+  data() {
+    return {
+      fetchedProjects: [],
+      loading: 0,
+      selected: {},
+      projects: [],
+    };
+  },
+  emits: ["close"],
+  mounted() {
+    this.projects = this.configRow.projects.map((x) => ({ ...x }));
+  },
   methods: {
     deleteClick(row) {
-      this.configRow.projects.splice(this.configRow.projects.indexOf(row), 1);
+      this.projects.splice(this.projects.indexOf(row), 1);
     },
     addClick() {
       this.configRow.projects.push({
@@ -68,7 +73,7 @@ export default {
     },
     saveClick() {
       let data = this.$store.getters.configData;
-      data[this.configRow.rn] = this.configRow;
+      data[this.configRow.rn].projects = this.projects;
       this.$store.commit("configData", data);
       this.$emit("close");
     },
