@@ -66,7 +66,7 @@ export default {
       this.projects.splice(this.projects.indexOf(row), 1);
     },
     addClick() {
-      this.configRow.projects.push(this.selected);
+      this.projects.push(this.selected);
     },
     saveClick() {
       let data = this.$store.getters.configData;
