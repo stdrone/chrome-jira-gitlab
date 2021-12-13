@@ -80,6 +80,7 @@ export default {
   },
   methods: {
     fetchBranches(search, loading) {
+      let timer = loading ? "2000ms" : "0ms";
       loading = loading || (() => null);
       console.log(this.selected);
       if (!this.selected.length) {
@@ -103,15 +104,45 @@ export default {
             me.fetchedBranches = response.body;
             loading(--me.loading);
           },
-          () => {
+          (response) => {
             loading(--me.loading);
+            console.error(response);
           }
         );
-      }, "2000ms");
+      }, timer);
       this._debounce();
     },
     createBranches() {
-      console.log(this.branchName);
+      this.selected.forEach((project) => {
+        const me = this;
+        this.GitLabAPI.post(
+          `/projects/${project}/repository/branches?branch=${this.branchName}&ref=${this.selectedBranch.name}`,
+          {},
+          (response) => {
+            me.createMR(project);
+            console.log(response);
+          },
+          (response) => {
+            console.error(response);
+          }
+        );
+      });
+    },
+    createMR(project) {
+      this.GitLabAPI.post(
+        `/projects/${project}/merge_requests`,
+        {
+          title: this.branchName,
+          source_branch: this.branchName,
+          target_branch: this.selectedBranch.name,
+        },
+        (response) => {
+          console.error(response);
+        },
+        (response) => {
+          console.error(response);
+        }
+      );
     },
   },
 };
@@ -126,12 +157,6 @@ div.buttons {
   text-align: center;
 }
 
-.selected img {
-  width: auto;
-  max-height: 23px;
-  margin-right: 0.5rem;
-}
-
 .branchname span {
   display: inline-block;
   width: 33%;
@@ -140,6 +165,12 @@ div.buttons {
 .d-center {
   display: flex;
   align-items: center;
+}
+
+.selected img {
+  width: auto;
+  max-height: 23px;
+  margin-right: 0.5rem;
 }
 
 .v-select .dropdown li {

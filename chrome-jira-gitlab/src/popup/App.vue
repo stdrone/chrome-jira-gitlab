@@ -1,6 +1,6 @@
 <template>
   <div class="popup">
-    <div v-if="config">
+    <div v-if="config.issue">
       <BranchConfig :config="config" />
     </div>
     <div class="noconfig" v-else>No config for this site</div>
