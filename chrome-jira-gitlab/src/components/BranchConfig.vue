@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="branchname">
-      <span><v-select v-model="prefix" :options="['fix', 'feature']" /></span>
+      <span><v-select v-model="prefix" :options="['fix/', 'feature/']" /></span>
       <span>{{ config.issue }}</span>
       <span><input v-model="postfix" /></span>
     </div>
@@ -46,6 +46,9 @@
         Create branches
       </vk-button>
     </div>
+    <div>
+      <pre>{{ log }}</pre>
+    </div>
   </div>
 </template>
 
@@ -59,19 +62,25 @@ export default {
   },
   data() {
     return {
-      prefix: "feature",
+      prefix: "feature/",
       postfix: "",
       selected: [],
       fetchedBranches: [],
       loading: 0,
       projects: [],
       selectedBranch: null,
+      log: "",
     };
   },
   computed: {
     branchName: {
       get() {
         return `${this.prefix}${this.config.issue}${this.postfix}`;
+      },
+    },
+    mrTitle: {
+      get() {
+        return `[${this.config.issue}] ${this.config.issueName}`;
       },
     },
   },
@@ -112,34 +121,50 @@ export default {
       }, timer);
       this._debounce();
     },
+    dolog(message) {
+      this.log += `\n${message}`;
+    },
     createBranches() {
+      const me = this;
+      me.log = "";
       this.selected.forEach((project) => {
-        const me = this;
         this.GitLabAPI.post(
           `/projects/${project}/repository/branches?branch=${this.branchName}&ref=${this.selectedBranch.name}`,
           {},
           (response) => {
+            me.dolog("Branch created");
             me.createMR(project);
             console.log(response);
           },
           (response) => {
+            if (response.body && response.body.message) {
+              me.dolog(response.body.message);
+              if ("Branch already exists" === response.body.message) {
+                me.createMR(project);
+              }
+            }
             console.error(response);
           }
         );
       });
     },
     createMR(project) {
+      const me = this;
       this.GitLabAPI.post(
         `/projects/${project}/merge_requests`,
         {
-          title: this.branchName,
+          title: this.mrTitle,
           source_branch: this.branchName,
           target_branch: this.selectedBranch.name,
         },
         (response) => {
-          console.error(response);
+          me.dolog("MR created");
+          console.log(response);
         },
         (response) => {
+          if (response.body && response.body.message) {
+            me.dolog(response.body.message);
+          }
           console.error(response);
         }
       );

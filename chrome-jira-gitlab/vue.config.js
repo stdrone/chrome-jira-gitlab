@@ -17,6 +17,11 @@ module.exports = {
         background: {
           entry: "src/background.js",
         },
+        contentScripts: {
+          entries: {
+            content: "src/content-script.js",
+          },
+        },
       },
     },
   },

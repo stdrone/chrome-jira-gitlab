@@ -22,16 +22,19 @@ export default {
     var query = { active: true, currentWindow: true };
     const me = this;
     chrome.tabs.query(query, (tabs) => {
-      let url = tabs[0].url;
+      let [tab] = tabs;
       let config = { projects: [] };
       me.$store.getters.configData.forEach((element) => {
-        if (url.includes(element.jira)) {
-          let issue = new URL(url).pathname.split("/");
-          element.issue = `/${issue[issue.length - 1]}`;
+        if (tab.url.includes(element.jira)) {
+          let issue = new URL(tab.url).pathname.split("/");
+          element.issue = `${issue[issue.length - 1]}`;
           config = element;
         }
       });
       me.config = config;
+      chrome.tabs.sendMessage(tab.id, "getIssueName", (issueName) => {
+        me.config.issueName = issueName;
+      });
     });
   },
 };
