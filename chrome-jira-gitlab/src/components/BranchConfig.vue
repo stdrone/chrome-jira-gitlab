@@ -69,6 +69,7 @@ export default {
       loading: 0,
       projects: [],
       selectedBranch: null,
+      user: null,
       log: "",
     };
   },
@@ -86,20 +87,16 @@ export default {
   },
   mounted() {
     this.projects = this.config.projects;
+    this.getUserID();
   },
   methods: {
     fetchBranches(search, loading) {
       let timer = loading ? "2000ms" : "0ms";
       loading = loading || (() => null);
-      console.log(this.selected);
       if (!this.selected.length) {
         return;
       }
       let project = this.selected[0];
-      this.GitLabAPI.setUrl(this.config.gitlab);
-      this.GitLabAPI.setToken(this.config.token);
-      console.log(project);
-      console.log(search);
       const me = this;
       if (this._debounce) {
         this._debounce.cancel();
@@ -156,9 +153,29 @@ export default {
           title: this.mrTitle,
           source_branch: this.branchName,
           target_branch: this.selectedBranch.name,
+          assignee_id: this.user,
         },
         (response) => {
           me.dolog("MR created");
+          console.log(response);
+        },
+        (response) => {
+          if (response.body && response.body.message) {
+            me.dolog(response.body.message);
+          }
+          console.error(response);
+        }
+      );
+    },
+    getUserID() {
+      const me = this;
+      this.GitLabAPI.setUrl(this.config.gitlab);
+      this.GitLabAPI.setToken(this.config.token);
+      this.GitLabAPI.get(
+        `/user/`,
+        {},
+        (response) => {
+          me.user = response.body.id;
           console.log(response);
         },
         (response) => {
