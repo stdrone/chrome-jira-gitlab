@@ -187,6 +187,10 @@ div.buttons {
   width: 33%;
 }
 
+.branchname span input {
+  max-width: 95%;
+}
+
 .d-center {
   display: flex;
   align-items: center;
