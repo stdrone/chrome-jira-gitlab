@@ -13,9 +13,9 @@
     </vk-table>
     <div>
       <v-select
-        name="project"
         @search="fetchProjects"
         :options="fetchedProjects"
+        label="name"
         v-model="selected"
       >
         <template slot="no-options">
@@ -23,18 +23,18 @@
         </template>
         <template slot="option" slot-scope="option">
           <div class="d-center">
-            {{ option.label }}
+            {{ option.name }}
           </div>
         </template>
         <template slot="selected-option" slot-scope="option">
           <div class="selected d-center">
-            {{ option.label }}
+            {{ option.name }}
           </div>
         </template>
       </v-select>
-      <vk-button @click="addClick" :disabled="!selected">Add</vk-button>
     </div>
     <div class="buttons">
+      <vk-button @click="addClick" :disabled="!selected">Add</vk-button>
       <vk-button @click="saveClick()">Save</vk-button>
       <vk-button @click="cancelClick()">Cancel</vk-button>
     </div>
@@ -66,10 +66,7 @@ export default {
       this.projects.splice(this.projects.indexOf(row), 1);
     },
     addClick() {
-      this.configRow.projects.push({
-        name: this.selected.label,
-        id: this.selected.id,
-      });
+      this.configRow.projects.push(this.selected);
     },
     saveClick() {
       let data = this.$store.getters.configData;
@@ -85,15 +82,26 @@ export default {
       this.GitLabAPI.setToken(this.configRow.token);
       if (search.length) {
         const me = this;
-        debounce(() => {
+        if (this._debounce) {
+          this._debounce.cancel();
+        }
+        this._debounce = debounce(() => {
           loading(me.loading++);
-          me.GitLabAPI.get("/projects", { search: search }, (response) => {
-            me.fetchedProjects = response.body.map((x) => {
-              return { label: x.name, id: x.id };
-            });
-            loading(--me.loading);
-          });
-        }, "1000ms")();
+          me.GitLabAPI.get(
+            "/projects",
+            { search: search },
+            (response) => {
+              me.fetchedProjects = response.body.map((x) => {
+                return { name: x.name, id: x.id };
+              });
+              loading(--me.loading);
+            },
+            () => {
+              loading(--me.loading);
+            }
+          );
+        }, "2000ms");
+        this._debounce();
       }
     },
   },

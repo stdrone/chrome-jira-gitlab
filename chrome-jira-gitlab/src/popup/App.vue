@@ -9,7 +9,6 @@
 
 <script>
 import BranchConfig from "../components/BranchConfig.vue";
-// import { ref } from "vue";
 
 export default {
   name: "App",
@@ -28,8 +27,7 @@ export default {
       me.$store.getters.configData.forEach((element) => {
         if (url.includes(element.jira)) {
           let issue = new URL(url).pathname.split("/");
-          issue = issue[issue.length - 1];
-          element.issue = issue;
+          element.issue = `/${issue[issue.length - 1]}`;
           config = element;
         }
       });
