@@ -81,7 +81,7 @@ export default {
     },
     mrTitle: {
       get() {
-        return `[${this.config.issue}] ${this.config.issueName}`;
+        return `WIP: [${this.config.issue}] ${this.config.issueName}`;
       },
     },
   },
@@ -154,6 +154,8 @@ export default {
           source_branch: this.branchName,
           target_branch: this.selectedBranch.name,
           assignee_id: this.user,
+          squash: true,
+          remove_source_branch: true,
         },
         (response) => {
           me.dolog("MR created");
