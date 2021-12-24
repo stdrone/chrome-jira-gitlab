@@ -5,7 +5,7 @@
   "description": "Jira plugin for create branches in Gitlab",
   "default_locale": "en",
   "permissions": [
-    "activeTab"
+    "*://*/browse/*"
   ],
   "icons": {
     "16": "icons/16.png",
