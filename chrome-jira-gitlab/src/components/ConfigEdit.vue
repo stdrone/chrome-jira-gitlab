@@ -65,6 +65,7 @@ export default {
         jira: this.jira,
         gitlab: this.gitlab,
         token: this.token,
+        projects: this.row.projects,
       };
       this.$store.commit("configData", data);
       this.$emit("close", this.row);

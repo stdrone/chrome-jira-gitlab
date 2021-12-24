@@ -16,7 +16,9 @@
     </vk-table-column>
     <vk-table-column title="Jira site" cell="jira"></vk-table-column>
     <vk-table-column title="Gitlab site" cell="gitlab"></vk-table-column>
-    <vk-table-column title="Gitlab token" cell="token"></vk-table-column>
+    <vk-table-column title="Gitlab token">
+      <span v-if="row.token" slot-scope="{ row }">***</span>
+    </vk-table-column>
     <vk-table-column title="Projects">
       <vk-button
         slot-scope="{ row }"
