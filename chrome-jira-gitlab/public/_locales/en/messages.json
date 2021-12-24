@@ -1,0 +1,6 @@
+{
+  "extName": {
+    "message": "Jira-Gitlab integration",
+    "description": "Jira plugin for create branches in Gitlab"
+  }
+}
