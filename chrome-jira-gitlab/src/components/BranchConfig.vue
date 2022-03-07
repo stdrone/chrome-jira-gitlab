@@ -5,7 +5,10 @@
       <span>{{ config.issue }}</span>
       <span><input v-model="postfix" /></span>
     </div>
-    <vk-table
+    <div class="mrTitle">
+      <input v-model="mrTitle" />
+    </div>
+    <vk-table class="projects"
       :data="config.projects"
       :selected-rows.sync="selected"
       rows-selectable
@@ -71,17 +74,14 @@ export default {
       selectedBranch: null,
       user: null,
       log: "",
+      mrTitle: `WIP: [${this.config.issue}] ${this.config.issueName}`,
     };
   },
   computed: {
     branchName: {
       get() {
-        return `${this.prefix}${this.config.issue}${this.postfix}`;
-      },
-    },
-    mrTitle: {
-      get() {
-        return `WIP: [${this.config.issue}] ${this.config.issueName}`;
+        console.log(`${this.prefix}${this.config.issue}${(this.postfix ? '_' : '')}${this.postfix}`);
+        return `${this.prefix}${this.config.issue}${(this.postfix ? '_' : '')}${this.postfix}`;
       },
     },
   },
@@ -128,10 +128,9 @@ export default {
         this.GitLabAPI.post(
           `/projects/${project}/repository/branches?branch=${this.branchName}&ref=${this.selectedBranch.name}`,
           {},
-          (response) => {
+          () => {
             me.dolog("Branch created");
             me.createMR(project);
-            console.log(response);
           },
           (response) => {
             if (response.body && response.body.message) {
@@ -157,9 +156,8 @@ export default {
           squash: true,
           remove_source_branch: true,
         },
-        (response) => {
+        () => {
           me.dolog("MR created");
-          console.log(response);
         },
         (response) => {
           if (response.body && response.body.message) {
@@ -178,7 +176,6 @@ export default {
         {},
         (response) => {
           me.user = response.body.id;
-          console.log(response);
         },
         (response) => {
           if (response.body && response.body.message) {
@@ -238,5 +235,15 @@ div.buttons {
 
 .v-select .dropdown-menu .active > a {
   color: #fff;
+}
+
+.mrTitle input {
+  width: 96%;
+  margin: 0 0 0 1%;
+}
+
+.projects.uk-table {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 </style>
