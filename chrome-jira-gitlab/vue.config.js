@@ -13,6 +13,10 @@ module.exports = {
   },
   pluginOptions: {
     browserExtension: {
+      components: {
+        background: false,
+        contentScripts: true
+      },
       componentOptions: {
         contentScripts: {
           entries: {

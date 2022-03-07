@@ -15,7 +15,7 @@ export default {
   components: { BranchConfig },
   data() {
     return {
-      config: { projects: [] },
+      config: { projects: [], issueName: "" },
     };
   },
   mounted() {
@@ -31,9 +31,9 @@ export default {
           config = element;
         }
       });
-      me.config = config;
       chrome.tabs.sendMessage(tab.id, "getIssueName", (issueName) => {
-        me.config.issueName = issueName;
+        config.issueName = issueName;
+        me.config = config;
       });
     });
   },
