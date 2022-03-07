@@ -5,6 +5,9 @@
       <span>{{ config.issue }}</span>
       <span><input v-model="postfix" /></span>
     </div>
+    <div>
+      <input v-model="mrTitle" />
+    </div>
     <vk-table
       :data="config.projects"
       :selected-rows.sync="selected"
