@@ -6,9 +6,18 @@ import App from './app.vue'
 import './index.scss'
 import { createPinia } from 'pinia'
 
+import Options from './pages/index.vue'
 import Edit from './pages/edit.vue'
 import Project from './pages/project.vue'
 
+routes.push({
+  path: '/',
+  component: Options,
+})
+routes.push({
+  path: '/options',
+  component: Options,
+})
 routes.push({
   path: '/edit/:index',
   component: Edit,

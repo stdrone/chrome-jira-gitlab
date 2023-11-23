@@ -27,9 +27,6 @@ export default defineManifest(async (env) => ({
   action: {
     default_popup: 'src/popup/index.html',
   },
-  background: {
-    service_worker: 'src/background/index.ts',
-  },
   content_scripts: [
     {
       all_frames: false,
@@ -40,7 +37,7 @@ export default defineManifest(async (env) => ({
   ],
   host_permissions: ['*://*/browse/*'],
   options_page: 'src/options/index.html',
-  permissions: ['storage', 'activeTab', 'identity'],
+  permissions: [],
   web_accessible_resources: [
     {
       matches: ['*://*/*'],
