@@ -46,6 +46,6 @@ export default defineManifest(async (env) => ({
   ],
   content_security_policy: {
     extension_pages:
-      "default-src 'self'; style-src 'self'; script-src 'self'; connect-src * data:; img-src 'self' data:;",
+      "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src * data:; img-src 'self' data:;",
   },
 }))
