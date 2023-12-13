@@ -169,7 +169,7 @@ const createBrahcnes = () => {
 watch(
   () => props.config,
   (value: AppConfig) => {
-    mrTitle.value = `${value.mrTitlePrefix}${value.issueName}`
+    mrTitle.value = `${value.mrTitlePrefix}[${value.issue}] ${value.issueName}`
     prefix.value = prefixOptions[0].value
     gitAPI.value = new GitLabApi({
       url: value.gitlab,
